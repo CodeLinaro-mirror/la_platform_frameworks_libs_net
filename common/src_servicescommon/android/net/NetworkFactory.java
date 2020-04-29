@@ -117,10 +117,10 @@ public class NetworkFactory extends Handler {
         mCapabilityFilter = filter;
     }
 
+    /* Registers this NetworkFactory with the system. May only be called once per factory. */
     public void register() {
         if (mProvider != null) {
-            Log.e(LOG_TAG, "Ignoring attempt to register already-registered NetworkFactory");
-            return;
+            throw new IllegalStateException("A NetworkFactory must only be registered once");
         }
         if (DBG) log("Registering NetworkFactory");
 
@@ -132,7 +132,7 @@ public class NetworkFactory extends Handler {
             }
 
             @Override
-            public void onRequestWithdrawn(@NonNull NetworkRequest request) {
+            public void onNetworkRequestWithdrawn(@NonNull NetworkRequest request) {
                 handleRemoveRequest(request);
             }
         };
@@ -142,16 +142,19 @@ public class NetworkFactory extends Handler {
             Context.CONNECTIVITY_SERVICE)).registerNetworkProvider(mProvider);
     }
 
-    public void unregister() {
+    /** Unregisters this NetworkFactory. After this call, the object can no longer be used. */
+    public void terminate() {
         if (mProvider == null) {
-            Log.e(LOG_TAG, "Ignoring attempt to unregister unregistered NetworkFactory");
-            return;
+            throw new IllegalStateException("This NetworkFactory was never registered");
         }
         if (DBG) log("Unregistering NetworkFactory");
 
         ((ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE))
             .unregisterNetworkProvider(mProvider);
-        mProvider = null;
+
+        // Remove all pending messages, since this object cannot be reused. Any message currently
+        // being processed will continue to run.
+        removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -316,7 +319,7 @@ public class NetworkFactory extends Handler {
             && (n.score < mScore || n.providerId == mProvider.getProviderId())
             // If this factory can't satisfy the capability needs of this request, then it
             // should not be tracked.
-            && n.request.satisfiedBy(mCapabilityFilter)
+            && n.request.canBeSatisfiedBy(mCapabilityFilter)
             // Finally if the concrete implementation of the factory rejects the request, then
             // don't track it.
             && acceptRequest(n.request, n.score);
@@ -332,7 +335,7 @@ public class NetworkFactory extends Handler {
             // - This factory can't satisfy the capability needs of the request
             // - The concrete implementation of the factory rejects the request
             && ((n.score > mScore && n.providerId != mProvider.getProviderId())
-                    || !n.request.satisfiedBy(mCapabilityFilter)
+                    || !n.request.canBeSatisfiedBy(mCapabilityFilter)
                     || !acceptRequest(n.request, n.score));
     }
 
