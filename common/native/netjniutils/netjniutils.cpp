@@ -74,19 +74,19 @@ int GetNativeFileDescriptorWithNdk(JNIEnv* env, jobject javaFd) {
   // Since Android S, there is an NDK API to get a file descriptor present in libnativehelper.so.
   // libnativehelper is loaded into all processes by the zygote since the zygote uses it
   // to load the Android Runtime and is also a public library (because of the NDK API).
-  typedef int (*ndkGetFd_t)(JNIEnv*, jobject);
-  static const ndkGetFd_t ndkGetFd = []() -> ndkGetFd_t {
+  typedef int (*ndkGetFD_t)(JNIEnv*, jobject);
+  static const ndkGetFD_t ndkGetFD = []() -> ndkGetFD_t {
     void* handle = dlopen("libnativehelper.so", RTLD_NOLOAD | RTLD_NODELETE);
-    auto ndkGetFd = reinterpret_cast<ndkGetFd_t>(dlsym(handle, "AFileDescriptor_getFd"));
-    if (ndkGetFd == nullptr) {
+    auto ndkGetFD = reinterpret_cast<ndkGetFD_t>(dlsym(handle, "AFileDescriptor_getFD"));
+    if (ndkGetFD == nullptr) {
       __android_log_print(ANDROID_LOG_FATAL, LOG_TAG,
-                          "Failed to dlsym(AFileDescriptor_getFd): %s", dlerror());
+                          "Failed to dlsym(AFileDescriptor_getFD): %s", dlerror());
       dlclose(handle);
     }
-    return ndkGetFd;
+    return ndkGetFD;
   }();
 
-  return javaFd != nullptr ? ndkGetFd(env, javaFd) : -1;
+  return javaFd != nullptr ? ndkGetFD(env, javaFd) : -1;
 }
 
 }  //  namespace

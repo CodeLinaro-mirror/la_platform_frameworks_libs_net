@@ -141,8 +141,7 @@ public final class NetworkCapabilitiesUtils {
      * See {@code NetworkCapabilities#maybeMarkCapabilitiesRestricted}.
      */
     private static final long FORCE_RESTRICTED_CAPABILITIES =
-            (1 << NET_CAPABILITY_ENTERPRISE)
-            | (1 << NET_CAPABILITY_OEM_PAID)
+            (1 << NET_CAPABILITY_OEM_PAID)
             | (1 << NET_CAPABILITY_OEM_PRIVATE);
 
     /**

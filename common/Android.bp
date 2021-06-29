@@ -49,12 +49,13 @@ java_library {
   ],
   visibility: [
         "//frameworks/base/packages/Tethering",
-        "//packages/modules/Connectivity:__subpackages__",
-        "//packages/modules/Connectivity/framework:__subpackages__",
+        "//packages/modules/Connectivity/Tethering",
         "//frameworks/opt/net/ike",
         "//frameworks/opt/net/wifi/service",
         "//packages/modules/Wifi/service",
         "//frameworks/opt/net/telephony",
+        "//frameworks/base/packages/Connectivity:__subpackages__",
+        "//packages/modules/Connectivity:__subpackages__",
         "//packages/modules/NetworkStack:__subpackages__",
         "//packages/modules/CaptivePortalLogin",
         "//frameworks/libs/net/common/tests:__subpackages__",
@@ -85,7 +86,6 @@ filegroup {
     path: "framework",
     visibility: [
         "//frameworks/base",
-        "//packages/modules/Connectivity:__subpackages__",
         "//frameworks/base/packages/Connectivity/framework",
     ],
 }
