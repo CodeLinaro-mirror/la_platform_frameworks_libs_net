@@ -171,6 +171,7 @@ java_library {
     ],
     apex_available: [
         "com.android.tethering",
+        "com.android.wifi",
         "//apex_available:platform",
     ],
     lint: { strict_updatability_linting: true },
@@ -184,6 +185,7 @@ java_library {
     sdk_version: "module_current",
     min_sdk_version: "29",
     visibility: [
+        "//packages/modules/Wifi:__subpackages__",
         "//frameworks/libs/net/common/testutils:__subpackages__",
         "//packages/modules/Connectivity:__subpackages__",
         "//packages/modules/NetworkStack:__subpackages__",
@@ -197,6 +199,7 @@ java_library {
     ],
     apex_available: [
         "com.android.tethering",
+        "com.android.wifi",
         "//apex_available:platform",
     ],
     lint: { strict_updatability_linting: true },
@@ -265,6 +268,10 @@ java_library {
         "//frameworks/libs/net/common/device",
         "//packages/modules/Wifi/framework/tests:__subpackages__",
         "//packages/apps/Settings",
+    ],
+    apex_available: [
+        "com.android.wifi",
+        "//apex_available:platform",
     ],
     lint: { strict_updatability_linting: true },
 }
